@@ -1,4 +1,4 @@
-name: Build VBMeta
+name: A207F VBMeta Builder
 
 on:
   workflow_dispatch:
@@ -8,29 +8,27 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Install tools
+      - name: Install dependencies
         run: |
           sudo apt update
-          sudo apt install -y git python3
+          sudo apt install -y git python3 tar
 
-      - name: Clone AVB
+      - name: Clone AVB tool
         run: |
           git clone https://android.googlesource.com/platform/external/avb
 
-      - name: Create vbmeta
+      - name: Build VBMeta (blank safe method)
         run: |
           cd avb
           python3 avbtool.py make_vbmeta_image \
-          --output vbmeta.img \
-          --disable_verification \
-          --disable_verity
+          --output vbmeta.img
 
-      - name: Pack TAR
+      - name: Create Odin TAR
         run: |
           tar -cvf vbmeta.tar avb/vbmeta.img
 
-      - name: Upload file
+      - name: Upload VBMeta
         uses: actions/upload-artifact@v4
         with:
-          name: vbmeta
+          name: vbmeta-A207F
           path: vbmeta.tar
