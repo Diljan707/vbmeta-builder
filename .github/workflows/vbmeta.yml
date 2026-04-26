@@ -17,17 +17,17 @@ jobs:
         run: |
           git clone https://android.googlesource.com/platform/external/avb
 
-      - name: Build VBMeta (blank safe method)
+      - name: Build VBMeta (safe method)
         run: |
           cd avb
           python3 avbtool.py make_vbmeta_image \
           --output vbmeta.img
 
-      - name: Create Odin TAR
+      - name: Create Odin TAR file
         run: |
           tar -cvf vbmeta.tar avb/vbmeta.img
 
-      - name: Upload VBMeta
+      - name: Upload result
         uses: actions/upload-artifact@v4
         with:
           name: vbmeta-A207F
