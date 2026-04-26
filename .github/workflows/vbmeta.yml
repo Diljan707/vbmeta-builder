@@ -1,0 +1,36 @@
+name: Build VBMeta
+
+on:
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Install tools
+        run: |
+          sudo apt update
+          sudo apt install -y git python3
+
+      - name: Clone AVB
+        run: |
+          git clone https://android.googlesource.com/platform/external/avb
+
+      - name: Create vbmeta
+        run: |
+          cd avb
+          python3 avbtool.py make_vbmeta_image \
+          --output vbmeta.img \
+          --disable_verification \
+          --disable_verity
+
+      - name: Pack TAR
+        run: |
+          tar -cvf vbmeta.tar avb/vbmeta.img
+
+      - name: Upload file
+        uses: actions/upload-artifact@v4
+        with:
+          name: vbmeta
+          path: vbmeta.tar
